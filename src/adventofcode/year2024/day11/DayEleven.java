@@ -1,37 +1,42 @@
 package adventofcode.year2024.day11;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import adventofcode.utilities.FileLineReader;
+import adventofcode.utilities.Pair;
 
 public class DayEleven {
 
     public static void main(String[] args) {
-        List<Long> stones = Arrays.asList(2L);
-        blinkAtStones(stones, 10, true);
-        
 //        List<Long> stones = readInput("test_input.txt");
-////        List<Long> stones = readInput("test_input2.txt");
-////        List<Long> stones = readInput("input.txt");
-//
-//        long part1Start = System.currentTimeMillis();
-//
+//        List<Long> stones = readInput("test_input2.txt");
+        List<Long> stones = readInput("input.txt");
+
+        long part1Start = System.currentTimeMillis();
+
 //        blinkAtStones(stones, 6, true);
-////        blinkAtStones(stones, 1, true);
-////        blinkAtStones(stones, 25, false);
-//
-//        long part2Start = System.currentTimeMillis();
-//
-//        blinkAtStones(stones, 75, false);
-//
-//        long end = System.currentTimeMillis();
-//        System.out.println();
-//        System.out.println(String.format("Part 1 duration: %dms", part2Start - part1Start));
-//        System.out.println(String.format("Part 2 duration: %dms", end - part2Start));
+//        blinkAtStones(stones, 1, true);
+        blinkAtStones(stones, 25, false);
+
+        long part2Start = System.currentTimeMillis();
+
+//        blinkAtStones(stones, 6);
+//        blinkAtStones(stones, 1);
+        blinkAtStones(stones, 75);
+
+        long end = System.currentTimeMillis();
+        System.out.println();
+        System.out.println(String.format("Part 1 duration: %dms", part2Start - part1Start));
+        System.out.println(String.format("Part 2 duration: %dms", end - part2Start));
     }
+
+    ///////////////////////
+    // PART ONE SOLUTION //
+    ///////////////////////
     
     private static void blinkAtStones(List<Long> stones, int blinkCount, boolean printSequence) {
         if (printSequence) {
@@ -57,7 +62,7 @@ public class DayEleven {
             } else if ((digits = countDigits(stone)) % 2 == 0) {
                 long tens = (long) Math.pow(10, (digits / 2));
                 long mod = stone % tens;
-                newStones.add((long) (stone / tens));
+                newStones.add(stone / tens);
                 newStones.add(mod);
             } else {
                 newStones.add(stone * 2024);
@@ -66,6 +71,62 @@ public class DayEleven {
         
         return newStones;
     }
+
+    ///////////////////////
+    // PART TWO SOLUTION //
+    ///////////////////////
+    
+    private static void blinkAtStones(List<Long> stones, int blinkCount) {
+        long total = 0;
+        Map<Pair<Long, Integer>, Long> cache = new LinkedHashMap<>();
+        for (long stone : stones) {
+            total += blink(stone, blinkCount, cache);
+        }
+        
+        System.out.println(String.format("Stone count: %d", total));
+    }
+    
+    private static long blink(Long stone, int remainingBlinkCount, Map<Pair<Long, Integer>, Long> cache) {
+        if (remainingBlinkCount == 0) {
+            return 1;
+        }
+
+        long total = 0;
+        Pair<Long, Integer> stoneBlinks = new Pair<Long, Integer>(stone, remainingBlinkCount);
+        if (cache.containsKey(stoneBlinks)) {
+            total = cache.get(stoneBlinks);
+        } else {
+            List<Long> newStones = new ArrayList<>();
+            int digits;
+            if (stone == 0) {
+                newStones.add(1L);
+            } else if ((digits = countDigits(stone)) % 2 == 0) {
+                long tens = (long) Math.pow(10, (digits / 2));
+                long mod = stone % tens;
+                newStones.add(stone / tens);
+                newStones.add(mod);
+            } else {
+                newStones.add(stone * 2024);
+            }
+    
+            for (long newStone : newStones) {
+                long stoneTotal = blink(newStone, remainingBlinkCount - 1, cache);
+                total += stoneTotal;
+            }
+
+            populateCache(stone, remainingBlinkCount, total, cache);
+        }
+        
+        return total;
+    }
+    
+    private static void populateCache(Long stone, int remainingBlinkCount, long total, Map<Pair<Long, Integer>, Long> cache) {
+        cache.put(new Pair<>(stone, remainingBlinkCount), total);
+    }
+    
+    ///////////////////////
+    // UTILITY FUNCTIONS //
+    ///////////////////////
     
     private static int countDigits(long number) {
         return (int) Math.log10(number) + 1;

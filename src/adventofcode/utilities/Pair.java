@@ -1,5 +1,7 @@
 package adventofcode.utilities;
 
+import java.util.Objects;
+
 public class Pair<TypeT, TypeS> {
 
     private TypeT first;
@@ -16,6 +18,24 @@ public class Pair<TypeT, TypeS> {
 
     public TypeS getSecond() {
         return second;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(first, second);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        } else if (obj == null) {
+            return false;
+        } else if (getClass() != obj.getClass()) {
+            return false;
+        }
+        Pair<?, ?> other = (Pair<?, ?>) obj;
+        return Objects.equals(first, other.first) && Objects.equals(second, other.second);
     }
 
 }
