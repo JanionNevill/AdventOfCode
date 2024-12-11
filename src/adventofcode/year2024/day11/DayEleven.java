@@ -1,5 +1,7 @@
 package adventofcode.year2024.day11;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -8,6 +10,7 @@ import java.util.stream.Collectors;
 
 import adventofcode.utilities.FileLineReader;
 import adventofcode.utilities.Pair;
+import adventofcode.utilities.benchmark.Benchmarker;
 
 public class DayEleven {
 
@@ -16,22 +19,30 @@ public class DayEleven {
 //        List<Long> stones = readInput("test_input2.txt");
         List<Long> stones = readInput("input.txt");
 
-        long part1Start = System.currentTimeMillis();
+        Instant partOneStart = Instant.now();
 
 //        blinkAtStones(stones, 6, true);
 //        blinkAtStones(stones, 1, true);
         blinkAtStones(stones, 25, false);
 
-        long part2Start = System.currentTimeMillis();
+        Instant partTwoStart = Instant.now();
 
 //        blinkAtStones(stones, 6);
 //        blinkAtStones(stones, 1);
         blinkAtStones(stones, 75);
 
-        long end = System.currentTimeMillis();
+        Instant end = Instant.now();
         System.out.println();
-        System.out.println(String.format("Part 1 duration: %dms", part2Start - part1Start));
-        System.out.println(String.format("Part 2 duration: %dms", end - part2Start));
+        System.out.println(String.format("Part 1 duration: %d ms", partOneStart.until(partTwoStart, ChronoUnit.MILLIS)));
+        System.out.println(String.format("Part 2 duration: %d ms", partTwoStart.until(end, ChronoUnit.MILLIS)));
+
+        System.out.println();
+
+        Benchmarker<List<Long>, List<Long>> benchmarker = new Benchmarker<>(
+                input -> DayEleven.blinkAtStones(stones, 25, false),
+                input -> DayEleven.blinkAtStones(stones, 75));
+
+        benchmarker.runBenchmark(stones, stones, 10, 100);
     }
 
     ///////////////////////

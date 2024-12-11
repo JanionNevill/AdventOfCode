@@ -1,5 +1,7 @@
 package adventofcode.year2024.day10;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashSet;
@@ -10,6 +12,7 @@ import adventofcode.utilities.Coordinate;
 import adventofcode.utilities.Direction;
 import adventofcode.utilities.FileLineReader;
 import adventofcode.utilities.Grid;
+import adventofcode.utilities.benchmark.Benchmarker;
 
 public class DayTenBruteForce {
 
@@ -17,20 +20,29 @@ public class DayTenBruteForce {
 //        Grid<Integer> grid = readInput("tiny_test_input.txt");
 //        Grid<Integer> grid = readInput("tiny_test_input2.txt");
 //        Grid<Integer> grid = readInput("test_input.txt");
+//        Grid<Integer> grid = readInput("reddit_input.txt");
         Grid<Integer> grid = readInput("input.txt");
 
-        long part1Start = System.currentTimeMillis();
-        
+        Instant partOneStart = Instant.now();
+
         findTotalPathScoreToAllEnds(grid);
 
-        long part2Start = System.currentTimeMillis();
-        
+        Instant partTwoStart = Instant.now();
+
         findTotalPathScoreViaAllPaths(grid);
 
-        long end = System.currentTimeMillis();
+        Instant end = Instant.now();
         System.out.println();
-        System.out.println(String.format("Part 1 duration: %dms", part2Start - part1Start));
-        System.out.println(String.format("Part 2 duration: %dms", end - part2Start));
+        System.out.println(String.format("Part 1 duration: %d ms", partOneStart.until(partTwoStart, ChronoUnit.MILLIS)));
+        System.out.println(String.format("Part 2 duration: %d ms", partTwoStart.until(end, ChronoUnit.MILLIS)));
+
+        System.out.println();
+
+        Benchmarker<Grid<Integer>, Grid<Integer>> benchmarker = new Benchmarker<>(
+                DayTenBruteForce::findTotalPathScoreToAllEnds,
+                DayTenBruteForce::findTotalPathScoreViaAllPaths);
+
+        benchmarker.runBenchmark(grid, grid, 10, 1000);
     }
     
     private static void findTotalPathScoreToAllEnds(Grid<Integer> grid) {
@@ -69,7 +81,7 @@ public class DayTenBruteForce {
                 totalPathScore += nines.size();
             }
         }
-        
+
         System.out.println(String.format("Total path score: %d", totalPathScore));
     }
     
