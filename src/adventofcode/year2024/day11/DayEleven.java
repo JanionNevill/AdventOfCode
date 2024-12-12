@@ -39,8 +39,8 @@ public class DayEleven {
         System.out.println();
 
         Benchmarker<List<Long>, List<Long>> benchmarker = new Benchmarker<>(
-                input -> DayEleven.blinkAtStones(stones, 25, false),
-                input -> DayEleven.blinkAtStones(stones, 75));
+                input -> DayEleven.blinkAtStones(input, 25, false),
+                input -> DayEleven.blinkAtStones(input, 75));
 
         benchmarker.runBenchmark(stones, stones, 10, 100);
     }
