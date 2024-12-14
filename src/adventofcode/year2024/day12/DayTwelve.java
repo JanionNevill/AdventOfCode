@@ -14,11 +14,11 @@ import adventofcode.utilities.benchmark.Benchmarker;
 public class DayTwelve {
 
     public static void main(String[] args) {
-//        Grid<String> garden= readInput("test_input.txt");
-//        Grid<String> garden= readInput("test_input2.txt");
-//        Grid<String> garden= readInput("test_input3.txt");
-//        Grid<String> garden= readInput("test_input4.txt");
-        Grid<String> garden= readInput("input.txt");
+//        Grid<String> garden = readInput("test_input.txt");
+//        Grid<String> garden = readInput("test_input2.txt");
+//        Grid<String> garden = readInput("test_input3.txt");
+//        Grid<String> garden = readInput("test_input4.txt");
+        Grid<String> garden = readInput("input.txt");
 
         Instant partOneStart = Instant.now();
 
