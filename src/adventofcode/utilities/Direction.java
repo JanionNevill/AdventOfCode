@@ -68,6 +68,16 @@ public class Direction {
         this.oppositeDirection = oppositeDirection;
     }
     
+    public Orientation findOrientation() {
+        if (moveX != 0 && moveY == 0) {
+            return Orientation.HORIZONTAL;
+        } else if (moveY != 0 && moveX == 0) {
+            return Orientation.VERTICAL;
+        }
+        
+        return Orientation.OTHER;
+    }
+    
     public String getName() {
         return name;
     }

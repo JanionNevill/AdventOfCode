@@ -19,10 +19,25 @@ public class Grid<CellT> {
     }
     
     public Grid() {
-        cells = new ArrayList<>();
+        this(0, 0);
     }
     
-    public void addCell(int x, int y, CellT location) {
+    public Grid(int width, int length) {
+        cells = new ArrayList<>();
+        for (int y = 0; y < length; y++) {
+            List<CellT> row = new ArrayList<>();
+            for (int x = 0; x < width; x++) {
+                row.add(null);
+            }
+            cells.add(row);
+        }
+    }
+    
+    public void addCell(Coordinate coordinate, CellT cell) {
+        addCell(coordinate.getX(), coordinate.getY(), cell);
+    }
+    
+    public void addCell(int x, int y, CellT cell) {
         while (y >= cells.size()) {
             cells.add(new ArrayList<>());
         }
@@ -37,7 +52,37 @@ public class Grid<CellT> {
             row.remove(x);
         }
         
-        row.add(x, location);
+        row.add(x, cell);
+    }
+    
+    public void removeCell(int x, int y) {
+        if (y >= cells.size() || x >= cells.get(0).size()) {
+            throw new IllegalArgumentException(String.format("Coordinates (%d, %d) are outside the grid", x, y));
+        }
+        
+        List<CellT> row = cells.get(y);
+        
+        if (x < row.size()) {
+            row.set(x, null);
+        }
+    }
+    
+    public void moveCell(int x, int y, int newX, int newY) {
+        if (y >= cells.size() || x >= cells.get(0).size()) {
+            throw new IllegalArgumentException(String.format("Coordinates (%d, %d) are outside the grid", x, y));
+        } else if (newY >= cells.size() || newX >= cells.get(0).size()) {
+            throw new IllegalArgumentException(String.format("Coordinates (%d, %d) are outside the grid", newX, newY));
+        }
+        
+        List<CellT> row = cells.get(y);
+        CellT value = row.set(x, null);
+        
+        List<CellT> newRow = cells.get(newY);
+        newRow.set(newX, value);
+    }
+    
+    public CellT getCell(Coordinate coordinate) {
+        return getCell(coordinate.getX(), coordinate.getY());
     }
     
     public CellT getCell(int x, int y) {
@@ -59,7 +104,7 @@ public class Grid<CellT> {
     public String toString() {
         String str = "";
         for (List<CellT> row : cells) {
-            String rowStr = row.stream().map(CellT::toString).collect(Collectors.joining());
+            String rowStr = row.stream().map(cell -> cell == null ? "." : cell.toString()).collect(Collectors.joining());
             str += rowStr;
             str += "\n";
         }
