@@ -15,6 +15,10 @@ public class Node<ItemT> {
     protected void addEdge(Edge<ItemT> edge) {
         edges.add(edge);
     }
+        
+    protected void removeEdge(Edge<ItemT> edge) {
+        edges.remove(edge);
+    }
     
     public ItemT getItem() {
         return item;

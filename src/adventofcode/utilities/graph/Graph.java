@@ -30,9 +30,21 @@ public class Graph<ItemT> {
     }
     
     public boolean addEdge(Node<ItemT> from, Node<ItemT> to, double value) {
-        Edge<ItemT> edge = new Edge<>(from, to, value);
+        return addEdge(from, to, new Edge<>(from, to, value));
+    }
+    
+    public boolean addEdge(Node<ItemT> from, Node<ItemT> to, Edge<ItemT> edge) {
         if (edges.add(edge)) {
             from.addEdge(edge);
+            return true;
+        }
+        
+        return false;
+    }
+    
+    public boolean removeEdge(Edge<ItemT> edge) {
+        if (edges.remove(edge)) {
+            edge.getStart().removeEdge(edge);
             return true;
         }
         

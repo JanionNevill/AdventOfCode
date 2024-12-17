@@ -11,6 +11,10 @@ import java.util.function.ToDoubleBiFunction;
 public class AStarPathfinder {
     
     public <ItemT> Optional<List<Node<ItemT>>> findShortestPath(Graph<ItemT> graph, Node<ItemT> from, Node<ItemT> to, ToDoubleBiFunction<Node<ItemT>, Node<ItemT>> heuristic) {
+        return findShortestPath(graph, from, to, heuristic, Double.MAX_VALUE);
+    }
+    
+    public <ItemT> Optional<List<Node<ItemT>>> findShortestPath(Graph<ItemT> graph, Node<ItemT> from, Node<ItemT> to, ToDoubleBiFunction<Node<ItemT>, Node<ItemT>> heuristic, double threshold) {
      // The set of discovered nodes that may need to be (re-)expanded.
         // Initially, only the start node is known.
         // This is usually implemented as a min-heap or priority queue rather than a hash-set.
@@ -51,10 +55,11 @@ public class AStarPathfinder {
             for (Edge<ItemT> edge : current.getEdges()) {
                 Node<ItemT> neighbour = edge.getEnd();
                 
-                // d(current,neighbor) is the weight of the edge from current to neighbor
-                // tentative_gScore is the distance from start to the neighbor through current
+                // d(current,neighbour) is the weight of the edge from current to neighbour
+                // tentative_gScore is the distance from start to the neighbour through current
                 double tentative_gScore = gScore.getOrDefault(current, Double.POSITIVE_INFINITY) + edge.getValue();
-                if (tentative_gScore < gScore.getOrDefault(neighbour, Double.POSITIVE_INFINITY)) {
+                if (tentative_gScore < gScore.getOrDefault(neighbour, Double.POSITIVE_INFINITY)
+                        && tentative_gScore <= threshold) {
                     // This path to neighbour is better than any previous one. Record it!
                     cameFrom.put(neighbour, current);
                     gScore.put(neighbour, tentative_gScore);
